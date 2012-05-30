@@ -7,6 +7,7 @@ Url:            http://www.cmake.org
 Group:          Development/Tools
 Source0:        http://www.cmake.org/files/v2.8/cmake-%{version}.tar.gz
 Source1:        macros.cmake
+Source1001: packaging/cmake.manifest 
 BuildRequires:  expat-devel
 BuildRequires:  pkgconfig(libarchive) >= 2.8.0
 BuildRequires:  pkgconfig(libcurl)
@@ -30,6 +31,7 @@ template instantiation.
 find -name \*.h -o -name \*.cxx -print0 | xargs -0 chmod -x
 
 %build
+cp %{SOURCE1001} .
 cat > %{buildroot}build-flags.cmake << EOF
 set(CMAKE_SKIP_RPATH YES CACHE BOOL "Skip rpath" FORCE)
 set(CMAKE_USE_RELATIVE_PATHS YES CACHE BOOL "Use relative paths" FORCE)
@@ -67,6 +69,7 @@ install -D -p -m 0644 %{_sourcedir}/macros.cmake \
 %remove_docs
 
 %files
+%manifest cmake.manifest
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/rpm/macros.cmake
 %{_bindir}/ccmake
