@@ -1,0 +1,12 @@
+Index: cmake-2.8.3/Source/CursesDialog/CMakeLists.txt
+===================================================================
+--- cmake-2.8.3.orig/Source/CursesDialog/CMakeLists.txt
++++ cmake-2.8.3/Source/CursesDialog/CMakeLists.txt
+@@ -32,6 +32,6 @@ INCLUDE_DIRECTORIES(${CURSES_INCLUDE_PAT
+ 
+ ADD_EXECUTABLE(ccmake ${CURSES_SRCS} )
+ TARGET_LINK_LIBRARIES(ccmake CMakeLib)
+-TARGET_LINK_LIBRARIES(ccmake cmForm)
++TARGET_LINK_LIBRARIES(ccmake cmForm tinfo)
+ 
+ INSTALL_TARGETS(/bin ccmake)
