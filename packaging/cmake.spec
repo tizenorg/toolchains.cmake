@@ -1,16 +1,16 @@
+%define release_prefix 1
+
 Name:           cmake
 Version:        2.8.5
-Release:        1
+Release:        %{release_prefix}
 License:        BSD
 Summary:        Cross-platform make system
 Url:            http://www.cmake.org
 Group:          Development/Tools
 Source0:        http://www.cmake.org/files/v2.8/cmake-%{version}.tar.gz
 Source1:        macros.cmake
-Source1001: packaging/cmake.manifest 
 BuildRequires:  expat-devel
 BuildRequires:  pkgconfig(libarchive) >= 2.8.0
-BuildRequires:  pkgconfig(libcurl)
 BuildRequires:  pkgconfig(zlib)
 BuildRequires:  procps
 BuildRequires:  pkgconfig(ncurses)
@@ -31,13 +31,12 @@ template instantiation.
 find -name \*.h -o -name \*.cxx -print0 | xargs -0 chmod -x
 
 %build
-cp %{SOURCE1001} .
 cat > %{buildroot}build-flags.cmake << EOF
 set(CMAKE_SKIP_RPATH YES CACHE BOOL "Skip rpath" FORCE)
 set(CMAKE_USE_RELATIVE_PATHS YES CACHE BOOL "Use relative paths" FORCE)
 set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "Verbose build" FORCE)
-set(CMAKE_C_FLAGS "%{optflags}" CACHE STRING "C flags" FORCE)
-set(CMAKE_CXX_FLAGS "%{optflags}" CACHE STRING "C++ flags" FORCE)
+set(CMAKE_C_FLAGS "%{optflags}" CACHE STRING "C flags" FORCE)  
+set(CMAKE_CXX_FLAGS "%{optflags}" CACHE STRING "C++ flags" FORCE)  
 set(CMAKE_SKIP_BOOTSTRAP_TEST ON CACHE BOOL "Skip BootstrapTest" FORCE)
 set(BUILD_CursesDialog YES CACHE BOOL "Build curses GUI" FORCE)
 set(MINGW_CC_LINUX2WIN_EXECUTABLE "" CACHE FILEPATH "Never detect mingw" FORCE)
@@ -52,7 +51,8 @@ cd %{_target_platform} && ../bootstrap \
                           --%{?with_bootstrap:no-}system-libs \
                           --parallel=`/usr/bin/getconf _NPROCESSORS_ONLN` \
                           --init=%{buildroot}build-flags.cmake \
-                          --system-libs
+                          --system-libs \
+                          --no-system-curl
 
 make VERBOSE=1 %{?_smp_mflags}
 
@@ -69,7 +69,6 @@ install -D -p -m 0644 %{_sourcedir}/macros.cmake \
 %remove_docs
 
 %files
-%manifest cmake.manifest
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/rpm/macros.cmake
 %{_bindir}/ccmake
